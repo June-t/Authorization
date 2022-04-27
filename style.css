@@ -20,6 +20,24 @@
     color: var(--color-j-secundary);
 }
 
+.panel-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.overlap-group {
+    cursor: pointer;
+}
+
+.txtNotas-move.spacer-up-x2 {
+    position: absolute;
+}
+
+#all_content {
+    width: 30%;
+    align-self: end;
+    margin: 1em;
+}
 
 .query_model {
     font-family: var(--montserrat);
@@ -382,8 +400,8 @@
 /* icons */
 
 .documents-icons {
-    margin: 1em 0;
-    }
+    margin: 2em 0;
+}
 
 .document-options {
     display: flex;

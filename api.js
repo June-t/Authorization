@@ -66,28 +66,27 @@ const config_rebuild = () => {
     let boolean_check = (input, boolean) => {
         input.forEach((elem, index) => {
             input[index].checked = boolean
+            config.model = boolean
         })
     }
 
-    if (JSON_rebuilt.model === true && localStorage.getItem("Arr_Items") !== null) {
+    if (JSON.parse(localStorage.getItem("Arr_Items")).length === 0) {
+
         localStorage.removeItem('Arr_Items')
-        boolean_check(check_automatic, false);
-        document.querySelector('.query_model').style.display = 'grid';
-        document.querySelector('#wrap').style.filter = 'blur(2px)';
-    } else if (JSON_rebuilt.model === true) {
-        boolean_check(check_automatic, true)
+        boolean_check(check_automatic, false)
+        // window.location.href = 'http://www.arssenasa3.gob.do/centros/PortalAutorizaciones/index.asp';
+
+    } else if (JSON_rebuilt.model === true && localStorage.getItem('Arr_Items') !== null) {
+
+        boolean_check(check_automatic, true);
         document.querySelector('.query_model').style.display = 'none';
         document.querySelector('#wrap').style.filter = 'blur(0px)';
         data_entry_automatic()
-    } else {
-        boolean_check(check_automatic, false)
-        document.querySelector('.query_model').style.display = 'grid';
-        document.querySelector('#wrap').style.filter = 'blur(2px)';
+
     }
 
 
-    JSON_rebuilt.create_list === true ?
-        boolean_check(create_automatic, true) : boolean_check(create_automatic, false)
+    JSON_rebuilt.create_list === true ? null : null
 
     return localStorage.setItem('config', JSON.stringify(config));
 }
@@ -143,6 +142,10 @@ let arr_close = ['#wrap', '.top__one button', '#query'].map((x) => {
 
 let arr_display = ['.documents-icons', '.query_end'].map((x) => {
     document.querySelector(x).style.display = 'none';
+})
+
+document.querySelector('.overlap-group').addEventListener('click', () => {
+    window.location.href = 'http://www.arssenasa3.gob.do/centros/PortalAutorizaciones/index.asp';
 })
 
 query_toggle.forEach(elem => {
@@ -255,14 +258,14 @@ const func_check_data_two = (num, pick) => new Promise((res, rej) => {
 
             add_status(query_end_cedula, 'CONCUERDA', 'var(--color-j-four)');
             add_status(query_end_nss, 'NO CONCUERDA', 'var(--color-j-three)');
-            res('AMBOS DATOS CONCUERDAN');
+            res('LA CÉDULA CONCUERDA PERO NO EL NSS');
 
         } else if ((input_dni.value.replace(/[-_]/g, '', '') == return_num(num, pick, 0, 11)) == false &&
             (input_nss.value == return_num(num, pick, 12, 21)) == true) {
 
             add_status(query_end_cedula, 'NO CONCUERDA', 'var(--color-j-three)');
             add_status(query_end_nss, 'CONCUERDA', 'var(--color-j-four)');
-            res('AMBOS DATOS CONCUERDAN');
+            res('EL NSS CONCUERDA PERO LA CÉDULA NO');
 
         } else {
             rej('NO ENTRA EN EL RANGO DE EDAD');
@@ -343,7 +346,9 @@ const func_get_product = (code) => new Promise((res, rej) => {
             let arr_display = ['.documents-icons', '.query_end'].map((x) => {
                 document.querySelector(x).style.display = '';
             })
-            document.querySelector('.bttNap-move').appendChild(document.querySelector('.documents-icons'))
+            document.querySelector('#ambulatorios > div').appendChild(document.querySelector('#all_content'))
+            // query_end.before(document.querySelector('.documents-icons')) // befores
+            // document.querySelector('.bttNap-move').appendChild(document.querySelector('.documents-icons'))
         }, 500);
     }
 
@@ -403,10 +408,6 @@ const func_status_person = () => {
         add_status(query_end_edad, `${'APLICA ' + '(' + ageValue + ' AÑOS)'}`, 'var(--color-j-four)'),
         styleElem.innerHTML = "#query_end_edad td:nth-child(2)::after {content: 'vitalidad';}"
     ) : add_status(query_end_edad, `${'NO APLICA ' + '(' + ageValue + ' AÑOS)'}`, 'var(--color-j-three)')
-
-    elemento = document.querySelector('.bttNap-move')
-    query_end = document.querySelector('.query_end')
-    elemento.appendChild(query_end)
 }
 
 // GENERACIÓN DE LA AUTORIZACIÓN & PDF´S
@@ -541,6 +542,7 @@ const data_entry_automatic = () => {
         let Arr_Items = JSON.parse(localStorage.getItem("Arr_Items"));
 
         let checkLocal = () => {
+
             Arr_Items.length === 0 ? (
                 localStorage.removeItem("Arr_Items")
             ) : process_delete();
@@ -557,14 +559,18 @@ const data_entry_automatic = () => {
     }
 
     // si hay arreglos pero no se ingreso nada, se comprueba y continua FALSE (TRUE) && TRUE
+
     if (localStorage.getItem('Arr_Items') !== null && 0 >= multi.value.length) {
+
         let dataLocal = JSON.parse(localStorage.getItem('Arr_Items')),
             two_number = `${return_num(dataLocal, 0, 11) + ' ' + return_num(dataLocal, 12, 21)}`;
 
         repeat_promise(two_number, two_number) // promise
         delete_element() // delete data local
+
         // si se ingreso un numero
     } else if ((0 >= multi.value.length) === false) {
+
         let arr_textarea = document.querySelector('#textarea-multi').value.split("\n"),
             two_number = `${return_num(arr_textarea, 0, 11) + ' ' + return_num(arr_textarea, 12, 21)}`;
         localStorage.setItem("Arr_Items", JSON.stringify(arr_textarea));
