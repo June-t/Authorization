@@ -69,7 +69,6 @@ const config_rebuild = () => {
         })
     }
 
-    // si en model es true and en local es false
     if (JSON_rebuilt.model === true && localStorage.getItem("Arr_Items") !== null) {
         localStorage.removeItem('Arr_Items')
         boolean_check(check_automatic, false);
