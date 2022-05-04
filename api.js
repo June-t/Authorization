@@ -370,7 +370,6 @@ const func_get_product = (code) => new Promise((res, rej) => {
         }, 500);
     }, 500);
 
-
 })
 
 const func_status_person = () => {
@@ -428,7 +427,7 @@ const open_ext_windows = () => {
         napId = document.querySelector('#napStatus h3 span'),
         w = window.open(`${'http://www.arssenasa3.gob.do/centros/PortalAutorizaciones/mod-consultas/autorizacion.asp?prt=1&id=' + AutIdeCode}`, napId.textContent, 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500,left = 390,top = 50');
     setTimeout(function () {
-        w.document.title = napId[0].textContent;
+        w.document.title = napId[0].textContent
     }, 1000);
 }
 
@@ -457,7 +456,26 @@ const open_iframe = () => {
     printPdf(urlPdf)
 
 }
-/* 
+
+const htmlinsert = (person) => {
+
+    let nombre = person.nombres,
+        apellido = person.apellidos,
+        cedula = person.cedula,
+        nss = person.nss,
+        estado = person.estado,
+        regimen = person.regimen;
+
+    let full_name = {
+        "nombre": `${nombre + ' ' + apellido}`,
+        "cedula": cedula,
+        "nss": nss,
+        "estado": `${(estado == 'OK (CORRECTO)') ? estado  : estado}`,
+        "regimen": `${(regimen == 'SUBSIDIADO') ? regimen  : regimen}`
+    }
+
+    console.log(full_name)
+}
 
 const affiliate_lists = (num) => {
 
@@ -466,25 +484,10 @@ const affiliate_lists = (num) => {
     fetch(url)
         .then(response => response.json())
         .then((data) => {
-            console.table(data.datos[0])
+            htmlinsert(data.datos[0])
         })
         .catch(error => console.error(error));
 }
-
-const continuing_generations = () => {
-
-    let Arr_Items = JSON.parse(localStorage.getItem("Arr_Items"));
-
-    let checkLocal = () => {
-        Arr_Items.length === 0 ? (
-            localStorage.removeItem("Arr_Items"),
-            data_entry_automatic()
-        ) : process_delete();
-    }
-
-}
-
-*/
 
 /* DIGITACIÓN DE LOS AFILIADOS  - MANUAL [X] */
 
@@ -667,104 +670,6 @@ Colocar la configuración que guardo la primera vez pero si hubo un cambio en lo
         	})
           .catch(error => console.error(error));
 
-let input_esp = document.querySelectorAll('#srch-text-medico'),
-    input_nss = document.querySelectorAll('#srch-nss-afiliado')[0],
-    input_ced = document.querySelectorAll('#srch-ced-afiliado')[0],
-    btt_search = document.querySelectorAll('#btt-buscar-afiliado')[0],
-    btt_new_search = document.querySelectorAll('#btt-reset-afiliado')[0],
-    person_name = document.querySelectorAll('#nombreAfiliado')[0],
-    person_surname = document.querySelectorAll('#apellidoAfiliado')[0],
-    regimen = document.querySelectorAll('#regimenAfiliado')[0],
-    edad = document.querySelectorAll('#edadAfiliado')[0],
-    div_list_person = document.querySelector('.list-person ul'),
-    arrList = ['050384626', '023199235', '005633987', '152767702', '145727567', '045123368', '013580518', '168808570', '001420205', '010579913', '015881810', '014337684', '000670681', '023643101', '032616497', '060901963', '011058224', '023744563', '050978918', '006403537', '054222203', '147201312', '162874587', '157118328', '041733822', '016003444', '021912838', '179232643', '011471652', '171715762', '161087491', '162172264', '167564574', '006763135', '002838180', '061371656', '023868604', '012580286', '158910387', '604350598', '002837298', '145887495', '013186710', '024714186', '077834542', '012675410', '030570014', '084773706', '024629942'];
-
-
-const htmlinsert = (person) => {
-
-    let name = person.name,
-        surname = person.surname,
-        dni = person.dni,
-        nss = person.nss,
-        regimen = person.regimen,
-        edad = person.edad;
-
-    let full_name = {
-        "name": `${name + ' ' + surname}`,
-        "cedula": dni,
-        "nss": nss,
-        "regimen": `${(regimen == 'SUBSIDIADO') ? regimen + ' <span class="check-valid">(✔)</span>' : regimen + ' <span class="check-valid-no">(⨉)</span>' }`,
-        "edad": `${ (edad >= 5 && edad <=  15) ? edad + ' <span class="check-valid">(✔)</span>' :
-                    (edad >= 35 && edad <= 64) ? edad + ' <span class="check-valid">(✔)</span>' : edad + ' <span class="check-valid-no">(⨉)</span>'}`,
-    }
-
-    let func_id = () => {
-
-        let key = Object.keys(full_name),
-            data_add = document.getElementById('data_add'),
-            tr = document.createElement('tr');
-
-        for (let i = 0; i < key.length; i++) {
-            let fl_name = key[i];
-            let td_a = document.createElement('td');
-            td_a.innerHTML = `${full_name[fl_name]}`;
-            tr.appendChild(td_a)
-            data_add.appendChild(tr);
-        }
-    }
-
-    func_id()
-
-}
-
-const htmlcontainer = () => {
-    let htmldiv = document.createElement('div');
-    let htmlStructure =
-        `<table>
-        <thead>
-          <tr class="data_aut">
-            <th>NOMBRE</th>
-            <th>CÉDULA</th>
-            <th>NSS</th>
-            <th>REGIMEN</th>
-            <th>EDAD</th>
-            <th>AUTORIZACIÓN</th>
-          </tr>
-        </thead>
-        <tbody id="data_add">
-        </tbody>
-        </table>`;
-
-
-
-    document.body.appendChild(htmldiv);
-    htmldiv.innerHTML = htmlStructure;
-}
-
-htmlcontainer()
-
-
-
-for (let i = 0; i < arrList.length; i++) {
-    setTimeout(function timer() {
-        input_nss.value = arrList[0];
-        btt_search.click();
-        setTimeout(() => {
-            arrList.shift()
-            htmlinsert({
-                name: person_name.value,
-                surname: person_surname.value,
-                dni: input_ced.value,
-                nss: input_nss.value,
-                regimen: regimen.value,
-                edad: edadAfiliado.value
-            });
-            btt_new_search.click();
-        }, 500);
-    }, i * 1000);
-}
-
-
 /*
 
 1./ Imprimir los valores de las personas con datos útiles [x]
@@ -777,5 +682,4 @@ de código de manera rápida, omitiendo el darle click al botón de NAP y ahorra
 ¿Para que es esto?
 
 Para poder dejar la monotonia de la misma tarea la realizarla, al generar los PDF.
-
 */
