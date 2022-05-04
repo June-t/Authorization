@@ -85,8 +85,8 @@ const config_rebuild = () => {
 
     }
 
-
-    JSON_rebuilt.create_list === true ? null : null
+    JSON_rebuilt.create_list === true ? query_button_aut :
+        da
 
     return localStorage.setItem('config', JSON.stringify(config));
 }
@@ -105,6 +105,9 @@ const config_event = (elem) => {
     function checkButton(id, type) {
         id.checked == true ? (id.checked = true, config[type] = true) :
             (id.checked = false, config[type] = false)
+
+        type == 'create_list' ? query_button[1].setAttribute('onclick', 'data_entry_automatic_option()') : query_button[0].setAttribute('onclick', 'data_entry_automatic()')
+        type == 'model' ? query_button[0].setAttribute('onclick', 'data_entry_automatic()') : null
 
         return localStorage.setItem('config', JSON.stringify(config))
     }
@@ -583,6 +586,11 @@ const data_entry_automatic = () => {
     } else {
         alert('INGRESE LOS DATOS');
     }
+}
+
+const data_entry_automatic_option = () => {
+
+    console.log('ES ESTE !')
 }
 
 const delete_items = () => {
