@@ -459,9 +459,12 @@
 
  }
 
+ // GENERACIÓN DE LA AUTORIZACIÓN RÁPIDA
+
  const htmlinsert = (person) => {
 
-     let nombre = person.nombres,
+     let id = person.contrato,
+         nombre = person.nombres,
          apellido = person.apellidos,
          cedula = person.cedula,
          nss = person.nss,
@@ -473,6 +476,7 @@
 
 
      let obj_person = {
+         "id": id,
          "nombre": `${nombre + ' ' + apellido}`,
          "cedula": cedula,
          "nss": nss,
@@ -481,14 +485,19 @@
      }
 
      let htmldiv = `
-                    <div class="css_td" data-label="id">01</div>
+                    <div class="css_td" data-label="id">${obj_person.id}</div>
                     <div class="css_td" data-label="nombre">${obj_person.nombre}</div>
                     <div class="css_td" data-label="cedula">${obj_person.cedula}</div>
                     <div class="css_td" data-label="nss">${obj_person.nss}</div>
                     <div class="css_td" data-label="estado">${obj_person.estado}</div>
                     <div class="css_td" data-label="regimen">${obj_person.regimen}</div>
                     <div class="css_td" data-label="table_aut">0</div>
-                    <div class="css_td" data-label="ex">EX</div>
+                    <div class="css_td" data-label="ex"><button onclick="delete_affiliate_list(this)"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 473 473" style="enable-background:new 0 0 473 473;" xml:space="preserve">
+                    <g>
+                        <path d="M324.285,215.015V128h20V38h-98.384V0H132.669v38H34.285v90h20v305h161.523c23.578,24.635,56.766,40,93.477,40   c71.368,0,129.43-58.062,129.43-129.43C438.715,277.276,388.612,222.474,324.285,215.015z M294.285,215.015   c-18.052,2.093-34.982,7.911-50,16.669V128h50V215.015z M162.669,30h53.232v8h-53.232V30z M64.285,68h250v30h-250V68z M84.285,128   h50v275h-50V128z M164.285,403V128h50v127.768c-21.356,23.089-34.429,53.946-34.429,87.802c0,21.411,5.231,41.622,14.475,59.43   H164.285z M309.285,443c-54.826,0-99.429-44.604-99.429-99.43s44.604-99.429,99.429-99.429s99.43,44.604,99.43,99.429   S364.111,443,309.285,443z"></path>
+                        <polygon points="342.248,289.395 309.285,322.358 276.323,289.395 255.11,310.608 288.073,343.571 255.11,376.533 276.323,397.746    309.285,364.783 342.248,397.746 363.461,376.533 330.498,343.571 363.461,310.608  "></polygon>
+                    </g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
+                    </svg></button></div>
                 `;
 
      css_tr.classList.add('css_tr');
@@ -505,7 +514,7 @@
          data_label_nss = document.querySelectorAll('[data-label="nss"]'),
          data_label_estado = document.querySelectorAll('[data-label="estado"]'),
          data_label_regimen = document.querySelectorAll('[data-label="regimen"]'),
-         data_label_status = document.querySelectorAll('[data-label="status"]');
+         data_label_id = document.querySelectorAll('[data-label="id"]');
 
      data_label_cedula.forEach(elem => {
          elem.innerHTML = elem.textContent.replace(/[-_]/g, '', '');
@@ -528,6 +537,30 @@
          })
          .catch(error => console.error(error));
  }
+
+ const delete_affiliate_list = (elem) => {
+     elem.parentElement.parentNode.remove()
+ }
+
+ /*
+ var arr_textarea = document.querySelector('#textarea-multi').value.split("\n");
+
+var return_numm = (type, start, end) => {
+  let r = '';
+  for (let i = start; i < end; i++) {
+    r += type[0][i];
+  }
+  return r;
+}
+
+var arrLenght = arr_textarea.length;
+
+for (var i = 0; i < arrLenght; i++) {
+  affiliate_lists(return_numm(arr_textarea, 12, 21))
+  arr_textarea.shift()
+}
+ 
+ */
 
  /* DIGITACIÓN DE LOS AFILIADOS  - MANUAL [X] */
 
@@ -626,6 +659,24 @@
  }
 
  const data_entry_automatic_option = () => {
+
+     let return_num = (type, start, end) => {
+         let r = '';
+         for (let i = start; i < end; i++) {
+             r += type[0][i];
+         }
+         return r;
+     }
+
+     if ((0 >= multi.value.length) === false) {
+
+         let arr_textarea = document.querySelector('#textarea-multi').value.split("\n");
+         affiliate_lists(return_num(arr_textarea, 12, 21));
+     } else {
+         alert('INGRESE LOS DATOS');
+     }
+
+
      console.log('ES ESTE !')
  }
 

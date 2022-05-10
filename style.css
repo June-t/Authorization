@@ -613,3 +613,17 @@
         background: #fff;
     }
 }
+
+[data-label="ex"] button {
+    border: 0px;
+    background: none;
+    width: 20px;
+    padding: 0px;
+    transition: all ease-in-out 0.5s;
+    fill: #000;
+}
+
+[data-label="ex"] button:hover svg {
+    fill: var(--color-j-three);
+    transition: all ease-in-out 0.5s;
+}
