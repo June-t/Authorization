@@ -627,3 +627,30 @@
     fill: var(--color-j-three);
     transition: all ease-in-out 0.5s;
 }
+
+[data-label="status"] [data-label="re"],
+[data-label="status"] [data-label="ad"] {
+    color: white;
+    padding: 0 1em;
+    border-radius: 2px;
+    width: 100%;
+    display: block;
+    height: min-content;
+    line-height: 13px;
+}
+
+[data-label="status"] [data-label="re"] {
+    background: var(--color-j-three);
+}
+
+[data-label="status"] [data-label="ad"] {
+    background: var(--color-j-four);
+}
+
+[data-label="re"] {
+    color: var(--color-j-three);
+}
+
+[data-label="ad"] {
+    color: var(--color-j-four);
+}

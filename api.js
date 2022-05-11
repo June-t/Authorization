@@ -134,7 +134,7 @@
 
  }
 
- let arr_close = ['#wrap', '.top__one button', '#query'].map((x) => {
+ let arr_close = ['#wrap', '.top__one button', '.medium__manual #query', '.medium__automatic #query'].map((x) => {
      document.querySelector(x).addEventListener('click', () => {
          document.querySelector('.query_model').style.display = 'none';
          document.querySelector('#wrap').style.filter = 'blur(0px)'
@@ -459,6 +459,9 @@
 
  }
 
+ //  02000121752	024727896
+ // 00110018488	015562795
+ // 22800007605	065526950
  // GENERACIÓN DE LA AUTORIZACIÓN RÁPIDA
 
  const htmlinsert = (person) => {
@@ -474,24 +477,26 @@
      let css_tbody = document.querySelector('.css_tbody'),
          css_tr = document.createElement('div');
 
-
      let obj_person = {
          "id": id,
          "nombre": `${nombre + ' ' + apellido}`,
          "cedula": cedula,
          "nss": nss,
-         "estado": `${(estado == 'OK (CORRECTO)') ? estado  : estado}`,
-         "regimen": `${(regimen == 'SUBSIDIADO') ? regimen  : regimen}`
+         "estado": `${estado == 'OK (CORRECTO)' ? '<span data-label="ad">'+ estado +'</span>' : '<span data-label="re">'+ estado +'</span>'}`,
+         "regimen": `${regimen == 'SUBSIDIADO' ? '<span data-label="ad">'+ regimen +'</span>' : '<span data-label="re">'+ regimen +'</span>'}`,
+         "status": `${estado == 'OK (CORRECTO)' && regimen == 'SUBSIDIADO' ? 
+         '<span data-label="ad">ADMITIDO</span>' : '<span data-label="re">RECHAZADO</span>'}`
      }
 
      let htmldiv = `
                     <div class="css_td" data-label="id">${obj_person.id}</div>
                     <div class="css_td" data-label="nombre">${obj_person.nombre}</div>
-                    <div class="css_td" data-label="cedula">${obj_person.cedula}</div>
+                    <div class="css_td" data-label="cedula">${obj_person.cedula.replace(/[-_]/g, '', '')}</div>
                     <div class="css_td" data-label="nss">${obj_person.nss}</div>
                     <div class="css_td" data-label="estado">${obj_person.estado}</div>
                     <div class="css_td" data-label="regimen">${obj_person.regimen}</div>
                     <div class="css_td" data-label="table_aut">0</div>
+                    <div class="css_td" data-label="status">${obj_person.status}</div>
                     <div class="css_td" data-label="ex"><button onclick="delete_affiliate_list(this)"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 473 473" style="enable-background:new 0 0 473 473;" xml:space="preserve">
                     <g>
                         <path d="M324.285,215.015V128h20V38h-98.384V0H132.669v38H34.285v90h20v305h161.523c23.578,24.635,56.766,40,93.477,40   c71.368,0,129.43-58.062,129.43-129.43C438.715,277.276,388.612,222.474,324.285,215.015z M294.285,215.015   c-18.052,2.093-34.982,7.911-50,16.669V128h50V215.015z M162.669,30h53.232v8h-53.232V30z M64.285,68h250v30h-250V68z M84.285,128   h50v275h-50V128z M164.285,403V128h50v127.768c-21.356,23.089-34.429,53.946-34.429,87.802c0,21.411,5.231,41.622,14.475,59.43   H164.285z M309.285,443c-54.826,0-99.429-44.604-99.429-99.43s44.604-99.429,99.429-99.429s99.43,44.604,99.43,99.429   S364.111,443,309.285,443z"></path>
@@ -504,26 +509,12 @@
      css_tr.innerHTML = htmldiv;
      css_tbody.appendChild(css_tr)
 
-     let data_label = (arr, check) => {
-         arr.forEach(elem => {
-             elem.textContent == check ? elem.style.color = 'var(--color-j-four)' : elem.style.color = 'var(--color-j-three)'
-         });
-     }
-
-     let data_label_cedula = document.querySelectorAll('[data-label="cedula"]'),
-         data_label_nss = document.querySelectorAll('[data-label="nss"]'),
-         data_label_estado = document.querySelectorAll('[data-label="estado"]'),
-         data_label_regimen = document.querySelectorAll('[data-label="regimen"]'),
-         data_label_id = document.querySelectorAll('[data-label="id"]');
-
-     data_label_cedula.forEach(elem => {
-         elem.innerHTML = elem.textContent.replace(/[-_]/g, '', '');
-     });
-
-     data_label(data_label_estado, 'OK (CORRECTO)')
-     data_label(data_label_regimen, 'SUBSIDIADO')
-
-
+     let data_label_cedula = document.querySelector('[data-label="cedula"]'),
+         data_label_nss = document.querySelector('[data-label="nss"]'),
+         data_label_estado = document.querySelector('[data-label="estado"]'),
+         data_label_regimen = document.querySelector('[data-label="regimen"]'),
+         data_label_id = document.querySelector('[data-label="id"]'),
+         data_label_status = document.querySelector('[data-label="status"]');
  }
 
  const affiliate_lists = (num) => {
@@ -541,26 +532,6 @@
  const delete_affiliate_list = (elem) => {
      elem.parentElement.parentNode.remove()
  }
-
- /*
- var arr_textarea = document.querySelector('#textarea-multi').value.split("\n");
-
-var return_numm = (type, start, end) => {
-  let r = '';
-  for (let i = start; i < end; i++) {
-    r += type[0][i];
-  }
-  return r;
-}
-
-var arrLenght = arr_textarea.length;
-
-for (var i = 0; i < arrLenght; i++) {
-  affiliate_lists(return_numm(arr_textarea, 12, 21))
-  arr_textarea.shift()
-}
- 
- */
 
  /* DIGITACIÓN DE LOS AFILIADOS  - MANUAL [X] */
 
@@ -670,14 +641,17 @@ for (var i = 0; i < arrLenght; i++) {
 
      if ((0 >= multi.value.length) === false) {
 
-         let arr_textarea = document.querySelector('#textarea-multi').value.split("\n");
-         affiliate_lists(return_num(arr_textarea, 12, 21));
+         let arr_textarea = document.querySelector('#textarea-multi').value.split("\n"),
+             arrLenght = arr_textarea.length;
+
+         for (var i = 0; i < arrLenght; i++) {
+             affiliate_lists(return_num(arr_textarea, 12, 21))
+             arr_textarea.shift()
+         }
+
      } else {
          alert('INGRESE LOS DATOS');
      }
-
-
-     console.log('ES ESTE !')
  }
 
  const delete_items = () => {
