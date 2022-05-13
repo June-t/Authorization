@@ -69,20 +69,23 @@
          })
      }
 
-     // if (JSON.parse(localStorage.getItem("Arr_Items")).length) {
 
-     //     localStorage.removeItem('Arr_Items')
-     //     boolean_check(check_automatic, false)
-     //     // window.location.href = 'http://www.arssenasa3.gob.do/centros/PortalAutorizaciones/index.asp';
+     if (JSON_rebuilt.model === true && localStorage.getItem('Arr_Items') !== null) {
 
-     // } else if (JSON_rebuilt.model === true && localStorage.getItem('Arr_Items') !== null) {
+         boolean_check(check_automatic, true);
+         document.querySelector('.query_model').style.display = 'none';
+         document.querySelector('#wrap').style.filter = 'blur(0px)';
+         data_entry_automatic()
 
-     //     boolean_check(check_automatic, true);
-     //     document.querySelector('.query_model').style.display = 'none';
-     //     document.querySelector('#wrap').style.filter = 'blur(0px)';
-     //     data_entry_automatic()
+     } else if (JSON.parse(localStorage.getItem("Arr_Items")).length) {
 
-     // }
+         localStorage.removeItem('Arr_Items')
+         boolean_check(check_automatic, false)
+         // window.location.href = 'http://www.arssenasa3.gob.do/centros/PortalAutorizaciones/index.asp';
+
+     }
+
+     JSON_rebuilt.create_list === true ? null : null
 
      return localStorage.setItem('config', JSON.stringify(config));
  }
@@ -107,7 +110,7 @@
              query_button[1].setAttribute('onclick', 'data_entry_automatic()')
 
 
-         localStorage.setItem('config', JSON.stringify(config))
+         return localStorage.setItem('config', JSON.stringify(config))
      }
 
      let fechDay = (id = date_of_service.value) => {
@@ -177,6 +180,14 @@
      }
      type == input_dni || type == input_nss ? type.value = r : r;
      return r.replace('undefined', '');
+ }
+
+ const return_num_number = (type, start, end) => {
+     let r = '';
+     for (let i = start; i < end; i++) {
+         r += type[0][i];
+     }
+     return r;
  }
 
  const add_status = (elem, arg, style) => {
@@ -459,39 +470,63 @@
 
  }
 
- //  02000121752	024727896
- // 00110018488	015562795
- // 22800007605	065526950
  // GENERACIÓN DE LA AUTORIZACIÓN RÁPIDA
 
- const htmlinsert = (person) => {
+ const htmlinsert = (person, num) => {
 
      let id = person.contrato,
          nombre = person.nombres,
          apellido = person.apellidos,
-         cedula = person.cedula,
+         cedula = person.cedula.replace(/[-_]/g, '', ''),
+         cedulaTitular = person.cedulaTitular.replace(/[-_]/g, '', ''),
          nss = person.nss,
          estado = person.estado,
          regimen = person.regimen;
 
      let css_tbody = document.querySelector('.css_tbody'),
-         css_tr = document.createElement('div');
+         css_tr = document.createElement('div'),
+         number = num;
+
+     let return_num_text = (type, start, end) => {
+         let r = '';
+         for (let i = start; i < end; i++) {
+             r += type[i];
+         }
+         return r;
+     }
+
+     let func_check_status = (num_text) => {
+
+         if (estado == 'OK (CORRECTO)' && regimen == 'SUBSIDIADO' && return_num_text(num_text, 12, 21) == nss && return_num_text(num_text, 0, 11) == cedula) {
+             return '<span data-label="ad">ADMITIDO</span>'
+         } else if (estado == 'OK (CORRECTO)' && regimen == 'SUBSIDIADO' && return_num_text(num_text, 12, 21) == nss && return_num_text(num_text, 0, 11) == cedulaTitular) {
+             return '<span data-label="ad">ADMITIDO</span>'
+         } else {
+             return '<span data-label="re">RECHAZADO</span>'
+         }
+     }
 
      let obj_person = {
          "id": id,
          "nombre": `${nombre + ' ' + apellido}`,
-         "cedula": cedula,
-         "nss": nss,
+         "cedula": `${return_num_text(number, 0, 11) == cedula ? 
+            '<span data-label="ad">'+ cedula +'</span>' : return_num_text(number, 0, 11) == cedulaTitular ? 
+            '<span data-label="ad">'+ cedulaTitular +'</span>' : '<span data-label="re">'+ cedula +'</span>' }`,
+
+         "nss": `${return_num_text(number, 12, 21) == nss ? 
+            '<span data-label="ad">'+ nss +'</span>' : '<span data-label="re">'+ nss +'</span>' }`,
+
          "estado": `${estado == 'OK (CORRECTO)' ? '<span data-label="ad">'+ estado +'</span>' : '<span data-label="re">'+ estado +'</span>'}`,
+
          "regimen": `${regimen == 'SUBSIDIADO' ? '<span data-label="ad">'+ regimen +'</span>' : '<span data-label="re">'+ regimen +'</span>'}`,
-         "status": `${estado == 'OK (CORRECTO)' && regimen == 'SUBSIDIADO' ? 
-         '<span data-label="ad">ADMITIDO</span>' : '<span data-label="re">RECHAZADO</span>'}`
+
+         "status": func_check_status(number)
      }
 
      let htmldiv = `
                     <div class="css_td" data-label="id">${obj_person.id}</div>
                     <div class="css_td" data-label="nombre">${obj_person.nombre}</div>
-                    <div class="css_td" data-label="cedula">${obj_person.cedula.replace(/[-_]/g, '', '')}</div>
+                    <div class="css_td" data-label="cedula">${obj_person.cedula}</div>
                     <div class="css_td" data-label="nss">${obj_person.nss}</div>
                     <div class="css_td" data-label="estado">${obj_person.estado}</div>
                     <div class="css_td" data-label="regimen">${obj_person.regimen}</div>
@@ -509,22 +544,22 @@
      css_tr.innerHTML = htmldiv;
      css_tbody.appendChild(css_tr)
 
-     let data_label_cedula = document.querySelector('[data-label="cedula"]'),
-         data_label_nss = document.querySelector('[data-label="nss"]'),
-         data_label_estado = document.querySelector('[data-label="estado"]'),
-         data_label_regimen = document.querySelector('[data-label="regimen"]'),
-         data_label_id = document.querySelector('[data-label="id"]'),
-         data_label_status = document.querySelector('[data-label="status"]');
+     //  let data_label_cedula = document.querySelector('[data-label="cedula"]'),
+     //      data_label_nss = document.querySelector('[data-label="nss"]'),
+     //      data_label_estado = document.querySelector('[data-label="estado"]'),
+     //      data_label_regimen = document.querySelector('[data-label="regimen"]'),
+     //      data_label_id = document.querySelector('[data-label="id"]'),
+     //      data_label_status = document.querySelector('[data-label="status"]');
  }
 
- const affiliate_lists = (num) => {
+ const affiliate_lists = (num, num1) => {
 
      let url = 'http://www.arssenasa3.gob.do/centros/PortalAutorizaciones/ajax/ax-afiliado.asp?intPrmContrato=&intPrmNSS=' + `${num.toString()}` + '&srtPrmCedula=';
 
      fetch(url)
          .then(response => response.json())
          .then((data) => {
-             htmlinsert(data.datos[0])
+             htmlinsert(data.datos[0], num1)
          })
          .catch(error => console.error(error));
  }
@@ -631,13 +666,7 @@
 
  const data_entry_automatic_option = () => {
 
-     let return_num = (type, start, end) => {
-         let r = '';
-         for (let i = start; i < end; i++) {
-             r += type[0][i];
-         }
-         return r;
-     }
+    document.querySelector('.table_scroll').style.display = 'block'
 
      if ((0 >= multi.value.length) === false) {
 
@@ -645,7 +674,9 @@
              arrLenght = arr_textarea.length;
 
          for (var i = 0; i < arrLenght; i++) {
-             affiliate_lists(return_num(arr_textarea, 12, 21))
+             let two_number =
+                 `${return_num_number(arr_textarea, 0, 11) + ' ' + return_num_number(arr_textarea, 12, 21)}`;
+             affiliate_lists(return_num_number(arr_textarea, 12, 21), two_number)
              arr_textarea.shift()
          }
 
@@ -659,18 +690,3 @@
  }
 
  config_check()
-
-
-
- /* INICIALIZAR EL SCRIPT
-
- /* CONSUMIR EL GET
-
-         fetch("http://www.arssenasa3.gob.do/centros/PortalAutorizaciones/ajax/ax-afiliado.asp?intPrmContrato=&intPrmNSS=021349298&srtPrmCedula=")
-         .then(response => response.json())
-                     .then((data) => {
-             console.table(data.datos[0])
-             })
-         .catch(error => console.error(error));
-
- */

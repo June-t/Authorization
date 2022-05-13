@@ -495,7 +495,31 @@
     border-radius: 5px;
     box-shadow: 0 0 20px -6px #5b5b5b;
     font-size: 12px;
+    display: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    height: 50vh;
+    overflow-y: scroll;
+    margin: auto;
 }
+
+.css_options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.css_options button {
+    border: 0px;
+    background: var(--color-j-secundary);
+    color: var(--color-j-primary);
+    border-radius: 5px;
+    padding: 0.5em;
+}
+
 
 /*Div Table Setting*/
 .css_table {
