@@ -487,38 +487,74 @@
 
 /* // table */
 
+
+.css_options {
+    display: flex;
+    width: fit-content;
+    grid-gap: 1em;
+    background: white;
+    box-shadow: 0 0 20px -6px #5b5b5b;
+    padding: 1em;
+    height: -moz-available;
+    flex-direction: column;
+    border-radius: 5px;
+    align-self: flex-start;
+}
+
+.css_options button {
+    color: var(--color-j-secundary);
+    background: none;
+    text-align: left;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    grid-gap: 10px;
+    font-family: var(--montserrat);
+    font-size: 12px;
+    border: 0px;
+    border-radius: 5px;
+    padding: 0.5em;
+    transition: all ease-in 0.2s;
+}
+
+.css_options button:hover {
+    background: var(--color-j-primary);
+    color: black;
+    transition: all ease-in 0.2s;
+}
+
+.table_scroll_options {
+    display: none;
+    grid-gap: 1em;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto 0;
+}
+
+.css_options svg {
+    width: 2em;
+    font-size: 10px;
+}
+
 .table_scroll {
     font-family: monospace;
-    width: max-content;
+    width: fit-content;
     padding: 1em;
     background: white;
     border-radius: 5px;
     box-shadow: 0 0 20px -6px #5b5b5b;
     font-size: 12px;
-    display: none;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    position: absolute;
-    height: 50vh;
     overflow-y: scroll;
-    margin: auto;
+    max-height: 50vh;
+    height: fit-content;
 }
 
-.css_options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.css_options button {
-    border: 0px;
-    background: var(--color-j-secundary);
-    color: var(--color-j-primary);
-    border-radius: 5px;
-    padding: 0.5em;
-}
 
 
 /*Div Table Setting*/
@@ -677,4 +713,13 @@
 
 [data-label="ad"] {
     color: var(--color-j-four);
+}
+
+[data-label="aut"] {
+    background: #3a5887;
+    color: white;
+    padding: 0.3em;
+    border-radius: 5px;
+    font-weight: 900;
+    cursor: pointer;
 }
