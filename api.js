@@ -440,7 +440,7 @@ const automatic_options_generation = () => {
     setTimeout(() => {
         let aut = document.querySelector('.bttNap-move #napStatus').childNodes[1].childNodes[1].textContent;
         result[0].parentNode.children[6].innerHTML = `${'<span onclick="copy_clipboard_list(this)" data-label="aut">' + aut + '</span>'}`;
-    }, 2000);
+    }, 800);
 }
 
 // GENERACIÓN DE LA AUTORIZACIÓN & PDF´S
@@ -749,8 +749,8 @@ const automatic_option_list = () => {
                             arr_item.shift()
                             setTimeout(() => {
                                 repeat_repeat();
-                            }, 1000);
-                        }, 2500);
+                            }, 1500);
+                        }, 1000);
                     }, 300);
                 }, 100);
             })
