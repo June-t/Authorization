@@ -424,23 +424,52 @@ const func_status_person = () => {
 
 const automatic_options_generation = () => {
 
-    let bttNap = document.querySelector('#btt-nap');
-    bttNap.click();
+    return new Promise((resolve, reject) => {
 
-    let css_tr_id = document.querySelectorAll('.css_tr'),
-        id = document.querySelector('#srch-contrato-afiliado'),
-        arr_id = [];
+        let bttNap = document.querySelector('#btt-nap');
+        bttNap.click();
 
-    css_tr_id.forEach((elem) => {
-        arr_id.push(elem.children[0])
+        let css_tr_id = document.querySelectorAll('.css_tr'),
+            id = document.querySelector('#srch-contrato-afiliado'),
+            arr_id = [];
+
+        css_tr_id.forEach((elem) => {
+            arr_id.push(elem.children[0])
+        })
+
+        let targetNode = document.getElementById('napStatus');
+
+        let config = {
+            attributes: true,
+            childList: true
+        };
+
+        let result = arr_id.filter(aut => aut.textContent == id.value);
+
+        let callback = function (mutationsList) {
+            for (let mutation of mutationsList) {
+                if (mutation.type == 'childList') {
+
+                    setTimeout(() => {
+                        let aut = document.querySelector('.bttNap-move #napStatus').childNodes[1].childNodes[1].textContent;
+                        result[0].parentNode.children[6].innerHTML = `${'<span onclick="copy_clipboard_list(this)" data-label="aut">' + aut + '</span>'}`;
+                        result[0].parentNode.classList.add('css_tr_complete');
+                        result[0].parentNode.classList.remove('css_tr');
+                        resolve('Resolvido');
+                    }, 500);
+                    observer.disconnect();
+
+                } else if (mutation.type == 'attributes') {
+                    console.log('The ' + mutation.attributeName + ' attribute was modified.');
+                }
+            }
+        };
+
+        let observer = new MutationObserver(callback);
+        observer.observe(targetNode, config);
+
     })
 
-    var result = arr_id.filter(aut => aut.textContent == id.value);
-
-    setTimeout(() => {
-        let aut = document.querySelector('.bttNap-move #napStatus').childNodes[1].childNodes[1].textContent;
-        result[0].parentNode.children[6].innerHTML = `${'<span onclick="copy_clipboard_list(this)" data-label="aut">' + aut + '</span>'}`;
-    }, 800);
 }
 
 // GENERACIÓN DE LA AUTORIZACIÓN & PDF´S
@@ -465,10 +494,14 @@ const copy_clipboard_list = (item) => {
 }
 
 const open_ext_windows = () => {
-    let AutIde = document.querySelector('.fmAutResp'),
-        AutIdeCode = AutIde.dataset.aut,
-        napId = document.querySelector('#napStatus h3 span'),
-        w = window.open(`${'http://www.arssenasa3.gob.do/centros/PortalAutorizaciones/mod-consultas/autorizacion.asp?prt=1&id=' + AutIdeCode}`, napId.textContent, 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500,left = 390,top = 50');
+
+    return new Promise((resolve, reject) => {
+        let AutIde = document.querySelector('.fmAutResp'),
+            AutIdeCode = AutIde.dataset.aut,
+            napId = document.querySelector('#napStatus h3 span'),
+            w = window.open(`${'http://www.arssenasa3.gob.do/centros/PortalAutorizaciones/mod-consultas/autorizacion.asp?prt=1&id=' + AutIdeCode}`, napId.textContent, 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500,left = 390,top = 50');
+        resolve('asd')
+    })
 }
 
 const open_iframe = () => {
@@ -739,27 +772,20 @@ const automatic_option_list = () => {
 
     var repeat_repeat = () => {
         repeat_promise(null, arr_item[0])
-            .then((res) => {
+            .then((res) => automatic_options_generation())
+            .then(() => open_ext_windows())
+            .then(() => {
+                clear_srch.click();
+                arr_item.shift();
                 setTimeout(() => {
-                    automatic_options_generation()
-                    setTimeout(() => {
-                        open_ext_windows()
-                        setTimeout(() => {
-                            clear_srch.click()
-                            arr_item.shift()
-                            setTimeout(() => {
-                                repeat_repeat();
-                            }, 1500);
-                        }, 1000);
-                    }, 300);
-                }, 100);
+                    repeat_repeat();
+                }, 1000);
             })
             .catch((rej) => console.log(rej))
     }
 
     repeat_repeat()
 }
-
 
 const delete_items = () => {
     localStorage.removeItem('Arr_Items')
