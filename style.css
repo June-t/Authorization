@@ -723,3 +723,7 @@
     font-weight: 900;
     cursor: pointer;
 }
+
+.css_tr_complete {
+	display: table-row;
+}
